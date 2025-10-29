@@ -36,8 +36,8 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .antMatchers("/welcome", "/register", "/login").permitAll()
-                        .antMatchers("/admin/**").hasRole("ADMIN")
+                        .antMatchers("/welcome", "user/register", "user/login").permitAll()
+                        .antMatchers("/admin/**","/user/getAll").hasRole("ADMIN")
                         .antMatchers("/claims/create", "/claims/submit").hasRole("CODER")
                         .antMatchers("/claims/review/**").hasRole("REVIEWER")
                         .antMatchers("/audit/**").hasRole("AUDITOR")
