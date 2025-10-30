@@ -26,7 +26,7 @@ public class ReviewLogEntity {
     private UserEntity reviewer;
 
     @Column(name = "action",nullable = false, length = 50)
-    private String action; // SUBMITTED, APPROVED, REJECTED
+    private ClaimStatus action; // SUBMITTED, APPROVED, REJECTED
 
     @Column(name = "remark",columnDefinition = "text")
     private String remarks;
