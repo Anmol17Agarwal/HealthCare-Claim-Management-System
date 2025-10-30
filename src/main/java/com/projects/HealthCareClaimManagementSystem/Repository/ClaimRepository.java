@@ -2,10 +2,12 @@ package com.projects.HealthCareClaimManagementSystem.Repository;
 
 import com.projects.HealthCareClaimManagementSystem.Entitiy.ClaimEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-public interface ClaimRepository extends JpaRepository<ClaimEntity,Long> {
+@Repository
+public interface ClaimRepository extends JpaRepository<ClaimEntity, Long> {
+    List<ClaimEntity> findByCreatedBy_UserId(Long userId);
 
-    List<ClaimEntity> findByCreatedBy_User_id(Long userId);
 }
