@@ -12,6 +12,8 @@ import com.projects.HealthCareClaimManagementSystem.Repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -69,10 +71,19 @@ public class ClaimService {
 
         List<ClaimEntity> claims;
 
-        if (user.getRoles().stream().anyMatch(r -> r.getName().equals("ROLE_ADMIN"))) {
+        boolean isAdmin = user.getRoles().stream().anyMatch(r -> r.getName().equals("ROLE_ADMIN"));
+        boolean isAuditor = user.getRoles().stream().anyMatch(r -> r.getName().equals("ROLE_AUDITOR"));
+        boolean isCoder = user.getRoles().stream().anyMatch(r -> r.getName().equals("ROLE_CODER"));
+        boolean isProvider = user.getRoles().stream().anyMatch(r -> r.getName().equals("ROLE_PROVIDER"));
+
+        if (isAdmin || isAuditor) {
+            // Admin and Auditor can see all claims
             claims = claimRepository.findAll();
+        } else if (isCoder || isProvider) {
+            // Coder and Provider can see only their own claims
+            claims = claimRepository.findByCreatedBy_UserId(user.getUserId());
         } else {
-            claims = claimRepository.findByCreatedBy_User_id(user.getUser_id());
+            throw new CustomException("Access denied: Unauthorized role");
         }
 
         return claims.stream()
@@ -80,6 +91,8 @@ public class ClaimService {
                 .collect(Collectors.toList());
     }
 
+
+    @Transactional
     public ClaimDto updateClaim(Long claimId, ClaimDto claimDto) {
         try {
             ClaimEntity claim = claimRepository.findById(claimId)
@@ -105,6 +118,8 @@ public class ClaimService {
         }
     }
 
+
+    @Transactional
     public void deleteClaim(Long claimId) {
         ClaimEntity claim = claimRepository.findById(claimId)
                 .orElseThrow(() -> new ResourceNotFoundException("Claim not found"));
