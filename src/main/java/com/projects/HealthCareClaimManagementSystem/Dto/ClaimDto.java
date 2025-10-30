@@ -51,8 +51,17 @@ public class ClaimDto {
     @JsonProperty("created_by")
     private UserDto createdBy;
 
+    @JsonProperty("reviewed_by")
+    private UserDto reviewedBy;
+
+    @JsonProperty("updated_by")
+    private String updatedBy;
+
     @JsonProperty("created_at")
     private LocalDateTime createdAt;
+
+    @JsonProperty("reviewed_at")
+    private LocalDateTime reviewedAt;
 
     @JsonProperty("updated_at")
     private LocalDateTime updatedAt;
