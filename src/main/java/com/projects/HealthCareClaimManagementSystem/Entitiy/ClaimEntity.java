@@ -47,6 +47,7 @@ public class ClaimEntity {
     @Column(name = "procedure_code")
     private String procedureCode;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "status",nullable = false, length = 30)
     private ClaimStatus status; // SUBMITTED, APPROVED, REJECTED
 
@@ -62,9 +63,20 @@ public class ClaimEntity {
     @JoinColumn(name = "created_by")
     private UserEntity createdBy;
 
+    @JoinColumn(name = "updated_by")
+    private String updatedBy;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "reviewed_by")
+    private UserEntity reviewedBy;
+
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
+
+    @CreationTimestamp
+    @Column(name = "reviewed_at")
+    private LocalDateTime reviewedAt;
 
     @UpdateTimestamp
     @Column(name = "updated_at")
