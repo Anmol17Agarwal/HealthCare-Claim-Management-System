@@ -113,7 +113,7 @@ public class UserService {
                 .collect(Collectors.toSet());
 
         return new AuthenticatedUserDto(
-                user.getUser_id(),
+                user.getUserId(),
                 user.getUserEmail(),
                 user.getFullName(),
                 roles,
