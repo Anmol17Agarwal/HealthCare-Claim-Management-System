@@ -10,7 +10,7 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "provider")
+@Table(name = "providers")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -24,15 +24,31 @@ public class ProviderEntity {
     @Column(name = "provider_name",nullable = false)
     private String providerName;
 
-
-    @Column(name = "npi_number")
+    @Column(name = "npi_number",unique = true)
     private String npiNumber;
 
+    @Column(name = "specialty")
+    private String specialty;
 
-    @Column(name = "address",columnDefinition = "text")
+    @Column(name = "contact_number",unique = true)
+    private String contactNumber;
+
+    @Column(name = "email",unique = true)
+    private String email;
+
+    @Column(name = "address", columnDefinition = "text")
     private String address;
 
+    @Column(name = "city")
+    private String city;
+
+    @Column(name = "state")
+    private String state;
+
+    @Column(name = "zip_code")
+    private String zipCode;
 
     @CreationTimestamp
+    @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
 }
