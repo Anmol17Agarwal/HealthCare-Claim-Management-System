@@ -8,6 +8,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
@@ -23,6 +24,9 @@ public class ClaimEntity {
     @Column(name = "claim_id")
     private long claimId;
 
+    @Column(name = "claim_number", unique = true, nullable = false)
+    private String claimNumber;
+
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "patient_id")
     private PatientEntity patient;
@@ -31,18 +35,35 @@ public class ClaimEntity {
     @JoinColumn(name = "provider_id")
     private ProviderEntity provider;
 
-    @Column(name = "amount",nullable = false, precision = 12, scale = 2)
-    private BigDecimal amount;
+    @Column(name = "billed_amount",nullable = false, precision = 12, scale = 2)
+    private BigDecimal billedAmount;
+
+    @Column(name = "approved_amount")
+    private BigDecimal approvedAmount;
+
+    @Column(name = "diagnosis_code")
+    private String diagnosisCode;
+
+    @Column(name = "procedure_code")
+    private String procedureCode;
 
     @Column(name = "status",nullable = false, length = 30)
-    private String status; // SUBMITTED, APPROVED, REJECTED
+    private ClaimStatus status; // SUBMITTED, APPROVED, REJECTED
+
+    @Column(name = "admission_date",nullable = false)
+    @NotBlank(message = "Admission date is required")
+    private LocalDateTime admissionDate;
+
+    @Column(name = "discharge_date",nullable = false)
+    @NotBlank(message = "Discharge date is required")
+    private LocalDateTime dischargeDate;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "created_by")
     private UserEntity createdBy;
 
     @CreationTimestamp
-    @Column(name = "created_at")
+    @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
 
     @UpdateTimestamp
