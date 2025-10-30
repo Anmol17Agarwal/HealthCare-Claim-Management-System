@@ -7,7 +7,7 @@ public class ProviderMapper {
 
     public static ProviderEntity toEntity(ProviderDto providerDto){
         return ProviderEntity.builder()
-                .provider_id(providerDto.getProviderId())
+                .providerId(providerDto.getProviderId())
                 .providerName(providerDto.getProviderName())
                 .npiNumber(providerDto.getNpiNumber())
                 .specialty(providerDto.getSpecialty())
@@ -23,7 +23,7 @@ public class ProviderMapper {
 
     public static ProviderDto toDto(ProviderEntity providerEntity){
         return ProviderDto.builder()
-                .providerId(providerEntity.getProvider_id())
+                .providerId(providerEntity.getProviderId())
                 .providerName(providerEntity.getProviderName())
                 .npiNumber(providerEntity.getNpiNumber())
                 .specialty(providerEntity.getSpecialty())
