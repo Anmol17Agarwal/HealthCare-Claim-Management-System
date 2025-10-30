@@ -5,6 +5,7 @@ import com.projects.HealthCareClaimManagementSystem.Service.ClaimService;
 import com.projects.HealthCareClaimManagementSystem.Utility.CustomResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,12 +17,14 @@ public class ClaimController {
     @Autowired
     ClaimService claimService;
 
+    @PreAuthorize("hasAnyRole('ADMIN','CODER')")
     @PostMapping
     private ResponseEntity<CustomResponse<ClaimDto>> createClaim(@RequestBody ClaimDto claimDto){
          ClaimDto claim =   claimService.createClaim(claimDto);
          return ResponseEntity.ok(CustomResponse.success("Claim has been created successfully",claim));
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN','CODER','PROVIDER','AUDITOR')")
     @GetMapping("/{id}")
     public ResponseEntity<CustomResponse<ClaimDto>> getClaimById(@PathVariable Long id){
             ClaimDto claim = claimService.getClaimById(id);
