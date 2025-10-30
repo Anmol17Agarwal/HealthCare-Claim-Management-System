@@ -25,6 +25,7 @@ public class ReviewLogEntity {
     @JoinColumn(name = "reviewer_id")
     private UserEntity reviewer;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "action",nullable = false, length = 50)
     private ClaimStatus action; // SUBMITTED, APPROVED, REJECTED
 
