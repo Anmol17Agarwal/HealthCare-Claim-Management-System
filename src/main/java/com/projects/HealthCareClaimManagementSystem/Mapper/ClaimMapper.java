@@ -19,8 +19,11 @@ public class ClaimMapper {
                 .admissionDate(claimDto.getAdmissionDate())
                 .dischargeDate(claimDto.getDischargeDate())
                 .createdBy(UserMapper.toEntity(claimDto.getCreatedBy()))
+                .reviewedBy(UserMapper.toEntity(claimDto.getReviewedBy()))
+                .updatedBy(claimDto.getUpdatedBy())
                 .createdAt(claimDto.getCreatedAt())
                 .updatedAt(claimDto.getUpdatedAt())
+                .reviewedAt(claimDto.getReviewedAt())
                 .build();
     }
 
@@ -38,8 +41,11 @@ public class ClaimMapper {
                 .admissionDate(claimEntity.getAdmissionDate())
                 .dischargeDate(claimEntity.getDischargeDate())
                 .createdBy(UserMapper.toDTO(claimEntity.getCreatedBy()))
+                .reviewedBy(UserMapper.toDTO(claimEntity.getReviewedBy()))
+                .updatedBy(claimEntity.getUpdatedBy())
                 .createdAt(claimEntity.getCreatedAt())
                 .updatedAt(claimEntity.getUpdatedAt())
+                .reviewedAt(claimEntity.getReviewedAt())
                 .build();
     }
 }
