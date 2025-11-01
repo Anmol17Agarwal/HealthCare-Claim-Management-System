@@ -9,6 +9,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
@@ -52,11 +53,11 @@ public class ClaimEntity {
     private ClaimStatus status; // SUBMITTED, APPROVED, REJECTED
 
     @Column(name = "admission_date",nullable = false)
-    @NotBlank(message = "Admission date is required")
+    @NotNull(message = "Admission date is required")
     private LocalDateTime admissionDate;
 
     @Column(name = "discharge_date",nullable = false)
-    @NotBlank(message = "Discharge date is required")
+    @NotNull(message = "Discharge date is required")
     private LocalDateTime dischargeDate;
 
     @ManyToOne(fetch = FetchType.LAZY)
