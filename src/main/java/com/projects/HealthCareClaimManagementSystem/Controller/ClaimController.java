@@ -1,6 +1,7 @@
 package com.projects.HealthCareClaimManagementSystem.Controller;
 
 import com.projects.HealthCareClaimManagementSystem.Dto.ClaimDto;
+import com.projects.HealthCareClaimManagementSystem.Entitiy.ClaimEntity;
 import com.projects.HealthCareClaimManagementSystem.Service.ClaimService;
 import com.projects.HealthCareClaimManagementSystem.Utility.CustomResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,12 +16,12 @@ import java.util.List;
 public class ClaimController {
 
     @Autowired
-    ClaimService claimService;
+    private ClaimService claimService;
 
     @PreAuthorize("hasAnyRole('ADMIN','CODER')")
     @PostMapping
-    private ResponseEntity<CustomResponse<ClaimDto>> createClaim(@RequestBody ClaimDto claimDto){
-         ClaimDto claim =   claimService.createClaim(claimDto);
+    public ResponseEntity<CustomResponse<ClaimDto>> createClaim(@RequestBody ClaimEntity claimEntity){
+         ClaimDto claim =   claimService.createClaim(claimEntity);
          return ResponseEntity.ok(CustomResponse.success("Claim has been created successfully",claim));
     }
 
@@ -38,8 +39,8 @@ public class ClaimController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<CustomResponse<ClaimDto>> updateClaim(@PathVariable Long id, @RequestBody ClaimDto claimDto){
-            ClaimDto updatedClaim = claimService.updateClaim(id,claimDto);
+    public ResponseEntity<CustomResponse<ClaimDto>> updateClaim(@PathVariable Long id, @RequestBody ClaimEntity claimEntity){
+            ClaimDto updatedClaim = claimService.updateClaim(id,claimEntity);
             return ResponseEntity.ok(CustomResponse.success("Claim updated Successfully",updatedClaim));
     }
 
