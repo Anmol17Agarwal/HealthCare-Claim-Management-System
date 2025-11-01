@@ -1,6 +1,7 @@
 package com.projects.HealthCareClaimManagementSystem.Controller;
 
 import com.projects.HealthCareClaimManagementSystem.Dto.PatientDto;
+import com.projects.HealthCareClaimManagementSystem.Entitiy.PatientEntity;
 import com.projects.HealthCareClaimManagementSystem.Service.PatientService;
 import com.projects.HealthCareClaimManagementSystem.Utility.CustomResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,8 +21,8 @@ public class PatientController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
-    public ResponseEntity<CustomResponse<PatientDto>> createPatient(@Valid @RequestBody PatientDto patientDto){
-        PatientDto patient = patientService.createPatient(patientDto);
+    public ResponseEntity<CustomResponse<PatientDto>> createPatient(@Valid @RequestBody PatientEntity patientEntity){
+        PatientDto patient = patientService.createPatient(patientEntity);
         return ResponseEntity.ok(CustomResponse.success("Patient details created successfully",patient));
     }
 
@@ -41,8 +42,8 @@ public class PatientController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
-    public ResponseEntity<CustomResponse<PatientDto>> updatePatient(@PathVariable Long id,@Valid @RequestBody PatientDto patientDto){
-        PatientDto updatedPatient = patientService.updatePatients(id,patientDto);
+    public ResponseEntity<CustomResponse<PatientDto>> updatePatient(@PathVariable Long id,@Valid @RequestBody PatientEntity patientEntity){
+        PatientDto updatedPatient = patientService.updatePatients(id,patientEntity);
         return ResponseEntity.ok(CustomResponse.success("Patient Details updated Successfully",updatedPatient));
     }
 
