@@ -33,25 +33,23 @@ public class ClaimService {
     @Autowired
     ClaimRepository claimRepository;
 
-    public ClaimDto createClaim(ClaimDto claimDto) {
+    public ClaimDto createClaim(ClaimEntity claimEntity) {
         try {
             String username = SecurityContextHolder.getContext().getAuthentication().getName();
             UserEntity creater = userRepository.findByUsername(username)
                     .orElseThrow(() -> new ResourceNotFoundException("User not found " + username));
-            PatientEntity patient = patientRepository.findById(claimDto.getPatient().getPatientId())
+            PatientEntity patient = patientRepository.findById(claimEntity.getPatient().getPatientId())
                     .orElseThrow(() -> new ResourceNotFoundException("Patient not found"));
-            ProviderEntity provider = providerRepository.findById(claimDto.getProvider().getProviderId())
+            ProviderEntity provider = providerRepository.findById(claimEntity.getProvider().getProviderId())
                     .orElseThrow(() -> new ResourceNotFoundException("Provider not found"));
+            claimEntity.setClaimNumber(generateClaimNumber());
+            claimEntity.setCreatedBy(creater);
+            claimEntity.setPatient(patient);
+            claimEntity.setProvider(provider);
+            claimEntity.setStatus(ClaimStatus.SUBMITTED);
+            claimEntity.setCreatedAt(LocalDateTime.now());
 
-            ClaimEntity claim = ClaimMapper.toEntity(claimDto);
-            claim.setClaimNumber(generateClaimNumber());
-            claim.setCreatedBy(creater);
-            claim.setPatient(patient);
-            claim.setProvider(provider);
-            claim.setStatus(ClaimStatus.SUBMITTED);
-            claim.setCreatedAt(LocalDateTime.now());
-
-            ClaimEntity savedClaim = claimRepository.save(claim);
+            ClaimEntity savedClaim = claimRepository.save(claimEntity);
             return ClaimMapper.toDto(savedClaim);
         } catch (Exception e) {
             throw new CustomException("Failed to create requested claim " + e.getMessage());
@@ -93,21 +91,21 @@ public class ClaimService {
 
 
     @Transactional
-    public ClaimDto updateClaim(Long claimId, ClaimDto claimDto) {
+    public ClaimDto updateClaim(Long claimId, ClaimEntity claimEntity) {
         try {
             ClaimEntity claim = claimRepository.findById(claimId)
                     .orElseThrow(() -> new ResourceNotFoundException("Claim not found"));
 
-            if (claimDto.getBilledAmount() != null)
-                claim.setBilledAmount(claimDto.getBilledAmount());
-            if (claimDto.getApprovedAmount() != null)
-                claim.setApprovedAmount(claimDto.getApprovedAmount());
-            if (claimDto.getDiagnosisCode() != null)
-                claim.setDiagnosisCode(claimDto.getDiagnosisCode());
-            if (claimDto.getProcedureCode() != null)
-                claim.setProcedureCode(claimDto.getProcedureCode());
-            if (claimDto.getStatus() != null)
-                claim.setStatus(claimDto.getStatus());
+            if (claimEntity.getBilledAmount() != null)
+                claim.setBilledAmount(claimEntity.getBilledAmount());
+            if (claimEntity.getApprovedAmount() != null)
+                claim.setApprovedAmount(claimEntity.getApprovedAmount());
+            if (claimEntity.getDiagnosisCode() != null)
+                claim.setDiagnosisCode(claimEntity.getDiagnosisCode());
+            if (claimEntity.getProcedureCode() != null)
+                claim.setProcedureCode(claimEntity.getProcedureCode());
+            if (claimEntity.getStatus() != null)
+                claim.setStatus(claimEntity.getStatus());
 
             claim.setUpdatedAt(LocalDateTime.now());
 
