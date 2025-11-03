@@ -2,6 +2,7 @@ package com.projects.HealthCareClaimManagementSystem.Controller;
 
 import com.projects.HealthCareClaimManagementSystem.Dto.PatientDto;
 import com.projects.HealthCareClaimManagementSystem.Dto.ProviderDto;
+import com.projects.HealthCareClaimManagementSystem.Entitiy.ProviderEntity;
 import com.projects.HealthCareClaimManagementSystem.Service.ProviderService;
 import com.projects.HealthCareClaimManagementSystem.Utility.CustomResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,8 +22,8 @@ public class ProviderController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
-    public ResponseEntity<CustomResponse<ProviderDto>> createProvider(@Valid@RequestBody ProviderDto providerDto){
-        ProviderDto provider = providerService.createProvider(providerDto);
+    public ResponseEntity<CustomResponse<ProviderDto>> createProvider(@Valid@RequestBody ProviderEntity providerEntity){
+        ProviderDto provider = providerService.createProvider(providerEntity);
         return ResponseEntity.ok(CustomResponse.success("Provider Details created successfully",provider));
     }
 
@@ -42,8 +43,8 @@ public class ProviderController {
 
     @PreAuthorize("hasAnyRole('ADMIN','PROVIDER')") //need to add provider also who can edit limit filed slike his change of address or new contact number or any othe rupdating
     @PutMapping("/{id}")
-    public ResponseEntity<CustomResponse<ProviderDto>> updateProvider(@PathVariable Long id, @Valid@RequestBody ProviderDto providerDto){
-        ProviderDto provider = providerService.updateProvider(id,providerDto);
+    public ResponseEntity<CustomResponse<ProviderDto>> updateProvider(@PathVariable Long id, @Valid@RequestBody ProviderEntity providerEntity){
+        ProviderDto provider = providerService.updateProvider(id,providerEntity);
         return ResponseEntity.ok(CustomResponse.success("Provider details updated successfully",provider));
     }
 
