@@ -35,7 +35,7 @@ public class PatientEntity {
     private String patientGender;
 
     @Column(name = "dob", nullable = false)
-    @NotBlank(message = "patient date of birth is required")
+    @NotNull(message = "patient date of birth is required")
     private LocalDateTime dob;
 
     @Column(name = "contact_number", nullable = false,unique = true)
