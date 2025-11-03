@@ -20,20 +20,19 @@ public class ProviderService {
     @Autowired
     private ProviderRepository providerRepository;
 
-    public ProviderDto createProvider(ProviderDto providerDto) {
+    public ProviderDto createProvider(ProviderEntity providerEntity) {
         try {
-            if (providerRepository.existsByNpiNumber(providerDto.getNpiNumber())) {
-                throw new ValidationException("Provider with npi number already exists: " + providerDto.getNpiNumber());
+            if (providerRepository.existsByNpiNumber(providerEntity.getNpiNumber())) {
+                throw new ValidationException("Provider with npi number already exists: " + providerEntity.getNpiNumber());
             }
-            if (providerRepository.existsByContactNumber(providerDto.getContactNumber())) {
-                throw new ValidationException("Provider with contact number already exists: " + providerDto.getContactNumber());
+            if (providerRepository.existsByContactNumber(providerEntity.getContactNumber())) {
+                throw new ValidationException("Provider with contact number already exists: " + providerEntity.getContactNumber());
             }
-            if (providerRepository.existsByEmail(providerDto.getEmail())) {
-                throw new ValidationException("provider with email id already exists: " + providerDto.getEmail());
+            if (providerRepository.existsByEmail(providerEntity.getEmail())) {
+                throw new ValidationException("provider with email id already exists: " + providerEntity.getEmail());
             }
-            ProviderEntity provider = ProviderMapper.toEntity(providerDto);
-            provider.setCreatedAt(LocalDateTime.now());
-            ProviderEntity savedProvider = providerRepository.save(provider);
+            providerEntity.setCreatedAt(LocalDateTime.now());
+            ProviderEntity savedProvider = providerRepository.save(providerEntity);
             return ProviderMapper.toDto(savedProvider);
         } catch (Exception e) {
             throw new CustomException("Failed to create Provider Details "+e.getMessage());
@@ -54,39 +53,39 @@ public class ProviderService {
     }
 
     @Transactional
-    public ProviderDto updateProvider(Long id, ProviderDto providerDto){
+    public ProviderDto updateProvider(Long id, ProviderEntity providerEntity){
         try{
             ProviderEntity provider = providerRepository.findById(id)
                     .orElseThrow(()-> new ResourceNotFoundException("Provider not found with ID: "+id));
 
-            if(providerDto.getProviderName()!=null){
-                provider.setProviderName(providerDto.getProviderName());
-            }if(providerDto.getNpiNumber()!=null){
-                if(providerRepository.existsByNpiNumberAndProviderIdNot(providerDto.getNpiNumber(),id)){
+            if(providerEntity.getProviderName()!=null){
+                provider.setProviderName(providerEntity.getProviderName());
+            }if(providerEntity.getNpiNumber()!=null){
+                if(providerRepository.existsByNpiNumberAndProviderIdNot(providerEntity.getNpiNumber(),id)){
                     throw new CustomException("Another provider already has this npi number.");
                 }else{
-                    provider.setNpiNumber(providerDto.getNpiNumber());
+                    provider.setNpiNumber(providerEntity.getNpiNumber());
                 }
-            }if(providerDto.getSpecialty()!=null){
-                provider.setSpecialty(providerDto.getSpecialty());
-            }if(providerDto.getContactNumber()!=null){
-                if(providerRepository.existsByContactNumberAndProviderIdNot(providerDto.getContactNumber(),id)){
+            }if(providerEntity.getSpecialty()!=null){
+                provider.setSpecialty(providerEntity.getSpecialty());
+            }if(providerEntity.getContactNumber()!=null){
+                if(providerRepository.existsByContactNumberAndProviderIdNot(providerEntity.getContactNumber(),id)){
                     throw new CustomException("Another provider already has this contact number.");
                 }else{
-                    provider.setContactNumber(providerDto.getContactNumber());
+                    provider.setContactNumber(providerEntity.getContactNumber());
                 }
-            }if(providerDto.getEmail()!=null){
-                if(providerRepository.existsByEmailAndProviderIdNot(providerDto.getEmail(),id)){
+            }if(providerEntity.getEmail()!=null){
+                if(providerRepository.existsByEmailAndProviderIdNot(providerEntity.getEmail(),id)){
                     throw new CustomException("Another provider already has this email id.");
                 }
-            }if(providerDto.getAddress()!=null){
-                provider.setAddress(providerDto.getAddress());
-            }if(providerDto.getCity()!=null){
+            }if(providerEntity.getAddress()!=null){
+                provider.setAddress(providerEntity.getAddress());
+            }if(providerEntity.getCity()!=null){
                 provider.setCity(provider.getCity());
-            }if(providerDto.getState()!=null){
-                provider.setState(providerDto.getState());
-            }if(providerDto.getZipCode()!=null){
-                provider.setZipCode(providerDto.getZipCode());
+            }if(providerEntity.getState()!=null){
+                provider.setState(providerEntity.getState());
+            }if(providerEntity.getZipCode()!=null){
+                provider.setZipCode(providerEntity.getZipCode());
             }
             provider.setUpdatedAt(LocalDateTime.now());
             ProviderEntity updatedProvider = providerRepository.save(provider);
