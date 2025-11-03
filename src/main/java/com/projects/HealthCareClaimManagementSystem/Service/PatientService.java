@@ -21,23 +21,22 @@ public class PatientService {
     @Autowired
     PatientRepository patientRepository;
 
-    public PatientDto createPatient(PatientDto patientDto) {
+    public PatientDto createPatient(PatientEntity patientEntity) {
         try {
-            if (patientRepository.existsByInsuranceNumber(patientDto.getInsuranceNumber())) {
-                throw new ValidationException("Patient with insurance number already exists: " + patientDto.getInsuranceNumber());
+            if (patientRepository.existsByInsuranceNumber(patientEntity.getInsuranceNumber())) {
+                throw new ValidationException("Patient with insurance number already exists: " + patientEntity.getInsuranceNumber());
             }
-            if (patientDto.getEmail() != null &&
-                    !patientDto.getEmail().matches("^[A-Za-z0-9+_.-]+@(.+)$")) {
-                throw new ValidationException("Invalid email format: " + patientDto.getEmail());
+            if (patientEntity.getEmail() != null &&
+                    !patientEntity.getEmail().matches("^[A-Za-z0-9+_.-]+@(.+)$")) {
+                throw new ValidationException("Invalid email format: " + patientEntity.getEmail());
             }
-            if (patientDto.getPolicyExpiryDate() != null &&
-                    patientDto.getPolicyExpiryDate().isBefore(LocalDateTime.now())) {
+            if (patientEntity.getPolicyExpiryDate() != null &&
+                    patientEntity.getPolicyExpiryDate().isBefore(LocalDateTime.now())) {
                 throw new ValidationException("Policy expiry date cannot be in the past.");
             }
-            PatientEntity patient = PatientMapper.toEntity(patientDto);
-            patient.setCreatedAt(LocalDateTime.now());
+            patientEntity.setCreatedAt(LocalDateTime.now());
 
-            PatientEntity savedPatient = patientRepository.save(patient);
+            PatientEntity savedPatient = patientRepository.save(patientEntity);
             return PatientMapper.toDto(savedPatient);
         } catch (Exception e) {
             throw new CustomException("Failed to create Patient Details: " + e.getMessage());
@@ -59,36 +58,36 @@ public class PatientService {
     }
 
     @Transactional
-    public PatientDto updatePatients(Long id, PatientDto patientDto) {
+    public PatientDto updatePatients(Long id, PatientEntity patientEntity) {
         try {
             PatientEntity patient = patientRepository.findById(id)
                     .orElseThrow(() -> new ResourceNotFoundException("Patient not found with ID: " + id));
 
-            if (patientDto.getPatientGender() != null) {
-                patient.setPatientGender(patientDto.getPatientGender());
+            if (patientEntity.getPatientGender() != null) {
+                patient.setPatientGender(patientEntity.getPatientGender());
             }
-            if (patientDto.getPatientName() != null) {
-                patient.setPatientName(patientDto.getPatientName());
+            if (patientEntity.getPatientName() != null) {
+                patient.setPatientName(patientEntity.getPatientName());
             }
-            if (patientDto.getDob() != null) {
-                patient.setDob(patientDto.getDob());
+            if (patientEntity.getDob() != null) {
+                patient.setDob(patientEntity.getDob());
             }
-            if (patientDto.getContactNumber() != null) {
+            if (patientEntity.getContactNumber() != null) {
                 patient.setContactNumber(patient.getContactNumber());
             }
-            if (patientDto.getInsuranceNumber() != null) {
-                if (patientRepository.existsByInsuranceNumberAndPatientIdNot(patientDto.getInsuranceNumber(), id)) {
+            if (patientEntity.getInsuranceNumber() != null) {
+                if (patientRepository.existsByInsuranceNumberAndPatientIdNot(patientEntity.getInsuranceNumber(), id)) {
                     throw new CustomException("Another patient already has this insurance number.");
                 }
                 patient.setInsuranceNumber(patient.getInsuranceNumber());
             }
-            if (patientDto.getInsuredAmount() != null) {
+            if (patientEntity.getInsuredAmount() != null) {
                 patient.setInsuredAmount(patient.getInsuredAmount());
             }
-            if (patientDto.getPolicyExpiryDate() != null) {
+            if (patientEntity.getPolicyExpiryDate() != null) {
                 patient.setPolicyExpiryDate(patient.getPolicyExpiryDate());
             }
-            patientDto.setUpdatedAt(LocalDateTime.now());
+            patientEntity.setUpdatedAt(LocalDateTime.now());
             PatientEntity updatedPatient = patientRepository.save(patient);
             return PatientMapper.toDto(updatedPatient);
         } catch (Exception e) {
