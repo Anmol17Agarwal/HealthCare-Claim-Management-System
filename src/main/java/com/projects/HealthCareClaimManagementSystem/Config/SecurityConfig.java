@@ -32,21 +32,37 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http
-                .csrf(csrf -> csrf.disable())
+        http.csrf(csrf -> csrf.disable())
                 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .antMatchers("/welcome", "user/register", "user/login").permitAll()
-                        .antMatchers("/admin/**","/user/getAll").hasRole("ADMIN")
-                        .antMatchers("/claims/create", "/claims/submit").hasRole("CODER")
-                        .antMatchers("/claims/review/**").hasRole("REVIEWER")
-                        .antMatchers("/audit/**").hasRole("AUDITOR")
+                        // Public
+                        .antMatchers("/welcome", "/user/register", "/user/login").permitAll()
+
+                        // Admin
+                        .antMatchers("/api/admin/**", "/user/getAll").hasRole("ADMIN")
+
+                        // Patients
+                        .antMatchers("/api/patients/**").hasAnyRole("ADMIN", "CODER", "PROVIDER", "AUDITOR")
+
+                        // Providers
+                        .antMatchers("/api/provider/**").hasAnyRole("ADMIN", "PROVIDER", "AUDITOR")
+
+                        // Claims
+                        .antMatchers("/api/claims/**").hasAnyRole("ADMIN", "CODER", "PROVIDER", "AUDITOR")
+
+                        // Review & Audit
+                        .antMatchers("/api/review/**").hasAnyRole("ADMIN", "REVIEWER")
+                        .antMatchers("/api/audit/**").hasRole("AUDITOR")
+
+                        // Auth required for everything else
                         .anyRequest().authenticated()
                 )
                 .httpBasic(Customizer.withDefaults())
-                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);;
+                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+
         return http.build();
     }
+
 
     @Bean
     public AuthenticationProvider authenticationProvider() {
